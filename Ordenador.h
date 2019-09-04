@@ -1,6 +1,9 @@
 #ifndef ORDENADOR_H_INCLUDED
 #define ORDENADOR_H_INCLUDED
 
+#include <stdio.h>
+#include <stdlib.h>
+
 void BubbleSort(int *vetor, int N, int *comparacao, int *troca){
     int aux;
     int check;
@@ -12,9 +15,9 @@ void BubbleSort(int *vetor, int N, int *comparacao, int *troca){
                 vetor[i] = vetor[i+1];
                 vetor[i+1] = aux;
                 check = 1;
-                *troca++;
+                (*troca)++;
             }
-            *comparacao++;
+            (*comparacao)++;;
         N--;
     }while(check == 1);
 };
@@ -22,13 +25,14 @@ void BubbleSort(int *vetor, int N, int *comparacao, int *troca){
 void heapSort(int *vetor, int N, int *comparacao, int *troca){
     int aux;
     for(int i = (N-1)/2; i >= 0; i--)
-        maxHeap(vetor, i, N-1);
+        maxHeap(vetor, i, N-1, comparacao, troca);
 
     for(int i = N-1; i >= 1; i--){
         aux = vetor[0];
         vetor[0] = vetor[i];
         vetor[i] = aux;
-        maxHeap(vetor, 0, i - 1);
+        maxHeap(vetor, 0, i - 1, comparacao, troca);
+        (*troca)++;
     }
 }
 
@@ -36,9 +40,11 @@ void maxHeap(int *vetor, int raiz, int N, int *comparacao, int *troca){
     int aux = vetor[raiz];
     int esquerda = raiz*2 + 1;
     while(esquerda <= N){
+        (*comparacao)++;;
         if(esquerda == N);
-        else if(vetor[esquerda+1] > vetor[esquerda])
+        else if(vetor[esquerda+1] > vetor[esquerda]){
             esquerda++;
+        }
         if(aux < vetor[esquerda]){
             vetor[raiz] = vetor[esquerda];
             raiz = esquerda;
@@ -46,6 +52,7 @@ void maxHeap(int *vetor, int raiz, int N, int *comparacao, int *troca){
         }
         else esquerda = N + 1;
     }
+    (*troca)++;
     vetor[raiz] = aux;
 }
 
@@ -55,19 +62,19 @@ void InsertionSort(int *vetor, int N, int *comparacao, int *troca){
         aux = vetor[i];
         for(j=i-1; aux < vetor[j] && j >= 0; j--){
             vetor[j+1] = vetor[j];
-            *troca++;
+            (*troca)++;
         }
         vetor[j+1] = aux;
-        *comparacao++;
+        (*comparacao)++;;
     }
 };
 
 void MergeSort(int *vetor, int inicio, int fim, int *comparacao, int *troca){
     int meio = floor((inicio+fim)/2);
     if(inicio < fim){
-        MergeSort(vetor, inicio, meio);
-        MergeSort(vetor, meio+1, fim);
-        merge(vetor, inicio, meio, fim);
+        MergeSort(vetor, inicio, meio, comparacao, troca);
+        MergeSort(vetor, meio+1, fim, comparacao, troca);
+        merge(vetor, inicio, meio, fim, comparacao, troca);
     }
 }
 
@@ -80,10 +87,12 @@ void merge(int *vetor, int inicio, int meio, int fim, int *comparacao, int *troc
         if(vetor[i] < vetor[j]){
             vetor_aux[k] = vetor[i];
             i++;
+            (*comparacao)++;
         }
         else{
             vetor_aux[k] = vetor[j];
             j++;
+            (*comparacao)++;;
         }
         k++;
     }
@@ -92,6 +101,7 @@ void merge(int *vetor, int inicio, int meio, int fim, int *comparacao, int *troc
             vetor_aux[k] = vetor[j];
             j++;
             k++;
+            (*comparacao)++;;
         }
     }
     else{
@@ -99,10 +109,12 @@ void merge(int *vetor, int inicio, int meio, int fim, int *comparacao, int *troc
             vetor_aux[k] = vetor[i];
             i++;
             k++;
+            (*comparacao)++;;
         }
     }
     for(int l = inicio, k = 0; l <= fim; l++, k++){
         vetor[l] = vetor_aux[k];
+        (*troca)++;
     }
     free(vetor_aux);
     vetor_aux = NULL;
@@ -111,9 +123,9 @@ void merge(int *vetor, int inicio, int meio, int fim, int *comparacao, int *troc
 void quickSort(int *vetor, int inicio, int fim, int *comparacao, int *troca){
     int pivo;
     if(inicio < fim){
-        pivo = particiona(vetor, inicio, fim);
-        quickSort(vetor, inicio, pivo-1);
-        quickSort(vetor, pivo+1, fim);
+        pivo = particiona(vetor, inicio, fim, comparacao, troca);
+        quickSort(vetor, inicio, pivo-1, comparacao, troca);
+        quickSort(vetor, pivo+1, fim, comparacao, troca);
     }
 }
 
@@ -123,20 +135,26 @@ int particiona(int *vetor, int inicio, int fim, int *comparacao, int *troca){
     int dir = fim;
     int aux;
     while(dir >= esq){
-        while(vetor[esq] <= pivo)
+        while(vetor[esq] <= pivo){
             esq++;
-        while(vetor[dir] > pivo)
+            (*comparacao)++;;
+        }
+        while(vetor[dir] > pivo){
             dir--;
+            (*comparacao)++;;
+        }
         if(dir >= esq){
             aux = vetor[esq];
             vetor[esq] = vetor[dir];
             vetor[dir] = aux;
+            (*troca)++;
         }
     }
 
     aux = vetor[dir];
     vetor[dir] = pivo;
     vetor[inicio] = aux;
+    (*troca)++;
     return dir;
 }
 
@@ -154,9 +172,9 @@ void SelectionSort(int *vetor, int N, int *comparacao, int *troca){
                 aux = vetor[j];
                 vetor[j] = vetor[pos];
                 vetor[pos] = aux;
-                *troca++;
+                (*troca)++;
             }
-            *comparacao++;
+            (*comparacao)++;;
         }
     };
 
