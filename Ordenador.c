@@ -18,7 +18,6 @@
         char *nome_saida;
         int N = fgetc(dados) - '0';
         printf("Numeros ordenados: %i\n", N);
-        char test = argv[1][0];
         int num;
         int comparacao = 0;
         int troca = 0;
@@ -26,7 +25,7 @@
         for(int i=0; fscanf(dados, "%i\n", &num) != EOF; i++){
             vetor[i] = num;
         };
-        switch(test){
+        switch(argv[1][0]){
             case 'q':
                 ticks[2] = clock();
                 quickSort(vetor, 0, N-1, &comparacao, &troca);
