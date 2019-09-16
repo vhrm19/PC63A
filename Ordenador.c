@@ -16,7 +16,6 @@ int main(int argc, char **argv){
         printf("Erro ao abrir o arquivo de entrada!\n");
         return 0;
     }
-    char *nome_saida, *nome_extensao;
     int N = fgetc(dados) - '0';
     printf("Numeros ordenados: %i\n", N);
     int num;
@@ -26,65 +25,75 @@ int main(int argc, char **argv){
     for(int i=0; fscanf(dados, "%i\n", &num) != EOF; i++)
         vetor[i] = num;
 
-    nome_extensao = strrchr(argv[2], '.');
-    int index = strlen(argv[2]) - strlen(nome_extensao);
-    printf("Index: %i\n", index);
-    strncpy(nome_saida, argv[2], index);
-
+    char *nome;
     switch(argv[1][0]){
         case 'q':
             ticks[2] = clock();
             quickSort(vetor, 0, N-1, &comparacao, &troca);
             ticks[3] = clock();
             printf("Tempo ordenacao %6.3fms\n", (double)(ticks[3] - ticks[2])*1000 / (CLOCKS_PER_SEC));
-            strcat(nome_saida, "_quicksort");
-            strcat(nome_saida, nome_extensao);
+            nome = "_quicksort";
             break;
         case 'b':
             ticks[2] = clock();
             BubbleSort(vetor, N, &comparacao, &troca);
             ticks[3] = clock();
             printf("Tempo ordenacao %6.3fms\n", (double)(ticks[3] - ticks[2])*1000 / (CLOCKS_PER_SEC));
-            strcat(nome_saida, "_bubblesort");
-            strcat(nome_saida, nome_extensao);
+            nome = "_bubblesort";
             break;
         case 'i':
             ticks[2] = clock();
             InsertionSort(vetor, N, &comparacao, &troca);
             ticks[3] = clock();
             printf("Tempo ordenacao %6.3fms\n", (double)(ticks[3] - ticks[2])*1000 / (CLOCKS_PER_SEC));
-            strcat(nome_saida, "_insertionsort");
-            strcat(nome_saida, nome_extensao);
+            nome = "_insertionsort";
             break;
         case 's':
             ticks[2] = clock();
             SelectionSort(vetor, N, &comparacao, &troca);
             ticks[3] = clock();
             printf("Tempo ordenacao %6.3fms\n", (double)(ticks[3] - ticks[2])*1000 / (CLOCKS_PER_SEC));
-            strcat(nome_saida, "_selectionsort");
-            strcat(nome_saida, nome_extensao);
+            nome = "_selectionsort";
             break;
         case 'm':
             ticks[2] = clock();
             MergeSort(vetor, 0, N-1, &comparacao, &troca);
             ticks[3] = clock();
             printf("Tempo ordenacao %6.3fms\n", (double)(ticks[3] - ticks[2])*1000 / (CLOCKS_PER_SEC));
-            strcat(nome_saida, "_mergesort");
-            strcat(nome_saida, nome_extensao);
+            nome = "_mergesort";
             break;
         case 'h':
             ticks[2] = clock();
             heapSort(vetor, N, &comparacao, &troca);
             ticks[3] = clock();
             printf("Tempo ordenacao %6.3fms\n", (double)(ticks[3] - ticks[2])*1000 / (CLOCKS_PER_SEC));
-            strcat(nome_saida, "_heapsort");
-            strcat(nome_saida, nome_extensao);
+            nome = "_heapsort";
             break;
         default:
             printf("Opcao de ordenacao invalida!\n");
             break;
     }
     printf("Quantidade de comparacoes: %i\nQuantidade de trocas: %i\n", comparacao, troca);
+
+    char *nome_saida;
+    char *nome_extensao = strrchr(argv[2], '.');
+    char vetor_temp[strlen(argv[2]) + strlen(nome)];
+    if(nome_extensao == NULL){
+        strncpy(vetor_temp, argv[2], strlen(argv[2]));
+        vetor_temp[strlen(argv[2])] = '\0';
+        strcat(vetor_temp, nome);
+        printf("%s\n", vetor_temp);
+        nome_saida = vetor_temp;
+    } else {
+    int index = strlen(argv[2]) - strlen(nome_extensao);        
+    strncpy(vetor_temp, argv[2], index);
+    vetor_temp[index] = '\0';
+    strcat(vetor_temp, nome);
+    strcat(vetor_temp, argv[2] + index);
+    nome_saida = vetor_temp;
+    }
+
+    printf("%s\n", nome_saida);
     FILE *saida = fopen(nome_saida, "w");
     if(saida == NULL){
         printf("Erro ao abrir o arquivo de saida!\n");
