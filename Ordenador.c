@@ -5,27 +5,35 @@
 #include "Ordenador.h"
 
 int main(int argc, char **argv){
+    /*Verificação de parametros*/
     if(argc != 3){
         printf("Número errado de parametros!\n");
         return 1;
     }
+
+    /*Variaveis básicas*/
     clock_t ticks[4];
+    int num;
+    int comparacao = 0;
+    int troca = 0;
     ticks[0] = clock();
+    char *nome;
+
+    /*Abrir arquivo de saida*/
     FILE *dados = fopen(argv[2], "r+");
     if(dados == NULL){
         printf("Erro ao abrir o arquivo de entrada!\n");
         return 0;
     }
-    int N = fgetc(dados) - '0';
+    int N = fgetc(dados) - '0'; //Quantidade de itens
     printf("Numeros ordenados: %i\n", N);
-    int num;
-    int comparacao = 0;
-    int troca = 0;
+
+    /*Armazenando números*/
     int *vetor = (int *) calloc(N, sizeof(int));
     for(int i=0; fscanf(dados, "%i\n", &num) != EOF; i++)
         vetor[i] = num;
 
-    char *nome;
+    /*Escolher qual é o algoritmo utilizado*/    
     switch(argv[1][0]){
         case 'q':
             ticks[2] = clock();
@@ -75,6 +83,7 @@ int main(int argc, char **argv){
     }
     printf("Quantidade de comparacoes: %i\nQuantidade de trocas: %i\n", comparacao, troca);
 
+    /*Cria o nome do arquivo de saida*/
     char *nome_saida;
     char *nome_extensao = strrchr(argv[2], '.');
     char vetor_temp[strlen(argv[2]) + strlen(nome)];
@@ -93,22 +102,23 @@ int main(int argc, char **argv){
     nome_saida = vetor_temp;
     }
 
-    printf("%s\n", nome_saida);
+    /*Abrir arquivo de saida*/
     FILE *saida = fopen(nome_saida, "w");
     if(saida == NULL){
         printf("Erro ao abrir o arquivo de saida!\n");
         return 0;
     }
-    for(int i=0; i < N; i++)
+    for(int i=0; i < N; i++) // Passar do vetor ordenado para a saida
         fprintf(saida, "%i\n", vetor[i]);
 
+    /*Verificar e fechar o programa corretamente*/
     if(fclose(dados) == EOF){
         printf("Erro ao fechar arquivo de dados!");
-        return 0;
+        return 1;
     }
     if(fclose(saida) == EOF){
         printf("Erro ao fechar arquivo de saida!");
-        return 0;
+        return 1;
     }
     printf("Arquivo %s gerado com sucesso!\n", nome_saida);
     ticks[1] = clock();
