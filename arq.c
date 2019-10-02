@@ -10,7 +10,7 @@ typedef struct{
 
 
 int main(){
-    int num_cadastros = 5;
+    int num_cadastros = 3;
     char buffer[100];
     Aluno cadastro[num_cadastros];
     FILE *saida;
@@ -36,9 +36,29 @@ int main(){
 
         fprintf(saida, "%-50.50s", cadastro[i].nome);
         fprintf(saida, "%-50.50s", cadastro[i].cidade);
-        fprintf(saida, "%-50.50s", cadastro[i].curso);
+        fprintf(saida, "%-50.50s|", cadastro[i].curso);
     }
     fflush(saida);
     fclose(saida);
+
+    FILE *arq = fopen("alunos.txt", "r");
+    Aluno recebe[num_cadastros];
+    for(size_t i = 0; i < num_cadastros; i++){   
+        fscanf(arq, "%50s", buffer);
+        recebe[i].nome = (char *) malloc(strlen(buffer)+1);
+        strcpy(recebe[i].nome, buffer);
+
+        fscanf(arq, "%50s", buffer);
+        recebe[i].cidade = (char *) malloc(strlen(buffer)+1);
+        strcpy(recebe[i].cidade, buffer);
+
+        fscanf(arq, "%50s", buffer);
+        printf("%i\n", strcspn(buffer, "|"));
+        // buffer[strcspn(buffer, '|')] = "\0";
+        recebe[i].curso = (char *) malloc(strlen(buffer)+1);
+        strcpy(recebe[i].curso, buffer);
+
+        //printf("Nome[%i]: %s Cidade: %s Curso: %s\n", i, recebe[i].nome, recebe[i].cidade, recebe[i].curso);
+    }
     return 0;
 }
